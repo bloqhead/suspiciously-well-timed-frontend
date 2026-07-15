@@ -14,6 +14,7 @@
 
       <div v-if="item.itemType === 'filing'" class="entry__figures figure">
         <span v-if="item.shares">{{ formatNumber(item.shares) }} shares</span>
+        <span v-if="item.securityTitle" class="entry__security">of {{ item.securityTitle }}</span>
         <span v-if="item.pricePerShare">@ ${{ item.pricePerShare.toFixed(2) }}</span>
         <span v-if="item.subtype" class="entry__code">{{ item.subtype }}</span>
       </div>
