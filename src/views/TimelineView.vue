@@ -7,10 +7,27 @@
       <span class="figure">{{ entity.ticker || entity.cik }}</span> · {{ entity.kind }}
     </p>
 
+    <div class="owner-filter">
+      <button
+        class="owner-filter__btn"
+        :class="{ 'owner-filter__btn--active': ownerFilter === 'trump' }"
+        @click="setOwnerFilter('trump')"
+      >
+        Trump only
+      </button>
+      <button
+        class="owner-filter__btn"
+        :class="{ 'owner-filter__btn--active': ownerFilter === '' }"
+        @click="setOwnerFilter('')"
+      >
+        All insiders
+      </button>
+    </div>
+
     <p v-if="loading" class="muted">Loading timeline…</p>
     <p v-else-if="error" class="error">{{ error }}</p>
     <p v-else-if="items.length === 0" class="muted">
-      No filings or government actions recorded yet for this entity.
+      No filings or government actions recorded yet for this filter.
     </p>
 
     <ul v-else class="timeline">
@@ -43,6 +60,10 @@ const loadingMore = ref(false)
 const error = ref('')
 const cursor = ref('')
 const hasMore = ref(false)
+// Defaults to Trump specifically, since Form 4s for this entity include
+// every officer/director/10%+ owner, not just him — most people looking at
+// a "pay-to-play" timeline for this entity want his transactions first.
+const ownerFilter = ref('trump')
 
 // Correlations are fetched separately from the timeline (different table,
 // different shape) and cross-referenced by (itemType, itemId) so the stamp
@@ -61,10 +82,12 @@ function correlationFor(item) {
 }
 
 async function loadInitial() {
+  loading.value = true
+  error.value = ''
   try {
     const [entityRes, timelineRes, correlationsRes] = await Promise.all([
       getEntity(props.id),
-      getTimeline(props.id),
+      getTimeline(props.id, { reportingOwner: ownerFilter.value }),
       listCorrelations({ entityId: props.id }),
     ])
     entity.value = entityRes
@@ -82,7 +105,7 @@ async function loadInitial() {
 async function loadMore() {
   loadingMore.value = true
   try {
-    const res = await getTimeline(props.id, { cursor: cursor.value })
+    const res = await getTimeline(props.id, { cursor: cursor.value, reportingOwner: ownerFilter.value })
     items.value = items.value.concat(res.data || [])
     cursor.value = res.nextCursor
     hasMore.value = res.hasMore
@@ -91,6 +114,12 @@ async function loadMore() {
   } finally {
     loadingMore.value = false
   }
+}
+
+function setOwnerFilter(value) {
+  if (ownerFilter.value === value) return
+  ownerFilter.value = value
+  loadInitial()
 }
 
 onMounted(loadInitial)
@@ -113,7 +142,29 @@ onMounted(loadInitial)
 .entity-sub {
   color: var(--muted-ink);
   font-size: 13px;
-  margin: 0 0 32px;
+  margin: 0 0 20px;
+}
+
+.owner-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.owner-filter__btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: 1px solid var(--paper-dim);
+  color: var(--muted-ink);
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.owner-filter__btn--active {
+  border-color: var(--wire-blue);
+  color: var(--wire-blue);
 }
 
 .timeline {

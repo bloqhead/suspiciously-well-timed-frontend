@@ -22,15 +22,17 @@ export function getEntity(id) {
   return get(`/api/entities/${id}`)
 }
 
-export function getTimeline(entityId, { cursor = '', limit = 30 } = {}) {
+export function getTimeline(entityId, { cursor = '', limit = 30, reportingOwner = '' } = {}) {
   const params = new URLSearchParams({ limit })
   if (cursor) params.set('cursor', cursor)
+  if (reportingOwner) params.set('reporting_owner', reportingOwner)
   return get(`/api/entities/${entityId}/timeline?${params}`)
 }
 
-export function listFilings(entityId, cursor = '') {
+export function listFilings(entityId, { cursor = '', reportingOwner = '' } = {}) {
   const params = new URLSearchParams({ entity_id: entityId })
   if (cursor) params.set('cursor', cursor)
+  if (reportingOwner) params.set('reporting_owner', reportingOwner)
   return get(`/api/filings?${params}`)
 }
 

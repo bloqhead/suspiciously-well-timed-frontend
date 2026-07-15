@@ -127,7 +127,9 @@ function formatNumber(n) {
   font-size: 13px;
   color: var(--muted-ink);
   display: flex;
-  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
 }
 
 .entry__code {
@@ -135,6 +137,9 @@ function formatNumber(n) {
   border: 1px solid var(--muted-ink);
   border-radius: var(--radius);
   font-size: 11px;
+  align-self: center;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .entry__link {
