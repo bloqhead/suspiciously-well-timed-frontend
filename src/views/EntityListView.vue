@@ -33,7 +33,7 @@ const error = ref('')
 onMounted(async () => {
   try {
     const res = await listEntities()
-    entities.value = res.data
+    entities.value = res.data || []
   } catch (e) {
     error.value = 'Could not load entities. ' + e.message
   } finally {

@@ -49,7 +49,7 @@ const hasMore = ref(false)
 // can attach to whichever timeline row it belongs to.
 function buildCorrelationMap(rows) {
   const map = new Map()
-  for (const c of rows) {
+  for (const c of rows || []) {
     map.set(`filing-${c.filingId}`, { daysApart: c.daysApart, confidence: c.confidence, partnerDesc: c.govEventDescription })
     map.set(`gov_event-${c.govEventId}`, { daysApart: c.daysApart, confidence: c.confidence, partnerDesc: c.filingAccession })
   }
@@ -68,7 +68,7 @@ async function loadInitial() {
       listCorrelations({ entityId: props.id }),
     ])
     entity.value = entityRes
-    items.value = timelineRes.data
+    items.value = timelineRes.data || []
     cursor.value = timelineRes.nextCursor
     hasMore.value = timelineRes.hasMore
     correlationMap.value = buildCorrelationMap(correlationsRes.data)
@@ -83,7 +83,7 @@ async function loadMore() {
   loadingMore.value = true
   try {
     const res = await getTimeline(props.id, { cursor: cursor.value })
-    items.value = items.value.concat(res.data)
+    items.value = items.value.concat(res.data || [])
     cursor.value = res.nextCursor
     hasMore.value = res.hasMore
   } catch (e) {

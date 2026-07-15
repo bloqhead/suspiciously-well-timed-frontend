@@ -63,7 +63,7 @@ const busyId = ref(null)
 async function load() {
   try {
     const res = await listCorrelations({ confidence: 'heuristic-strong' })
-    rows.value = res.data
+    rows.value = res.data || []
     cursor.value = res.nextCursor
     hasMore.value = res.hasMore
   } catch (e) {
@@ -77,7 +77,7 @@ async function loadMore() {
   loadingMore.value = true
   try {
     const res = await listCorrelations({ confidence: 'heuristic-strong', cursor: cursor.value })
-    rows.value = rows.value.concat(res.data)
+    rows.value = rows.value.concat(res.data || [])
     cursor.value = res.nextCursor
     hasMore.value = res.hasMore
   } finally {
