@@ -1,0 +1,82 @@
+/* ---- Design tokens ----
+   Palette: an official-document feel — filings, ledgers, redaction —
+   not a generic dashboard. Deliberately avoiding the cream+serif+terracotta
+   and near-black+acid-green defaults; this is navy/manila/stamp-red instead.
+*/
+:root {
+  --ink-navy: #1b2430;
+  --ink-navy-deep: #131b24;
+  --paper: #e4ddc8;
+  --paper-dim: #cfc7ac;
+  --redact-black: #0d0d0d;
+  --stamp-red: #b23a2e;
+  --wire-blue: #4c7a94;
+  --seal-gold: #9c8b3c;
+  --muted-ink: #7c8592;
+
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+  --radius: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ink-navy);
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+h1, h2, h3, .mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--wire-blue);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* tabular figures everywhere numbers appear, so columns of dollar amounts
+   and share counts actually align */
+.figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+button {
+  font-family: var(--font-sans);
+}
+
+/* visible keyboard focus, not suppressed — accessibility floor per design
+   principles, not decoration */
+:focus-visible {
+  outline: 2px solid var(--wire-blue);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
